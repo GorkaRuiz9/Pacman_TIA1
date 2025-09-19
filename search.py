@@ -95,19 +95,84 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    # Creamos la pila para DFS
+    pila=util.Stack()
+    visitados=set()
 
+    estado_inicial=problem.getStartState()
+    coste=0
+
+    pila.push((estado_inicial,[],coste)) #El estado inicial y la lista de acciones vacia
+
+    while not pila.isEmpty():
+        estado, acciones, costeA=pila.pop()
+
+        if problem.isGoalState(estado):
+            #print(costeA) #Lo calcula el propio programa, pero lo dejamos ahí pa que veamos que podemos hacerlo igual que las direcciones
+            return acciones
+
+        if estado not in visitados:
+            visitados.add(estado)
+
+            for sucesor, accion, coste in problem.getSuccessors(estado): #Devyelve una lista de triples (sucesor, accion, coste)
+                if sucesor not in visitados:
+                    pila.push((sucesor, acciones+[accion],costeA+coste))
+
+    
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Creamos una cola en este caso, ya que ahora es FILO
+    cola=util.Queue()
+    visitados=set()
+
+    estado_inicial=problem.getStartState()
+    coste=0
+
+    cola.push((estado_inicial,[],coste)) #El estado inicial y la lista de acciones vacia
+
+    while not cola.isEmpty():
+        estado, acciones, costeA=cola.pop()
+
+        if problem.isGoalState(estado):
+            #print(costeA) #Lo calcula el propio programa, pero lo dejamos ahí pa que veamos que podemos hacerlo igual que las direcciones
+            return acciones
+
+        if estado not in visitados:
+            visitados.add(estado)
+
+            for sucesor, accion, coste in problem.getSuccessors(estado): #Devyelve una lista de triples (sucesor, accion, coste)
+                if sucesor not in visitados:
+                    cola.push((sucesor, acciones+[accion],costeA+coste))
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Creamos una cola de prioridad en este caso, porque los elementos se irán tomando en base a ella
+    cola=util.PriorityQueue()
+    visitados=set()
+
+    estado_inicial=problem.getStartState()
+    coste=0
+
+    cola.push((estado_inicial,[],coste),coste) #Debido a la estructura de esta cola tambien se debe añadir al final, parámetro "priority", coste y prioridad coinciden
+
+    while not cola.isEmpty():
+        estado, acciones, costeA=cola.pop()
+
+        if problem.isGoalState(estado):
+            #print(costeA) #Lo calcula el propio programa, pero lo dejamos ahí pa que veamos que podemos hacerlo igual que las direcciones
+            return acciones
+
+        if estado not in visitados:
+            visitados.add(estado)
+
+            for sucesor, accion, coste in problem.getSuccessors(estado): #Devyelve una lista de triples (sucesor, accion, coste)
+                if sucesor not in visitados:
+                    cola.push((sucesor, acciones+[accion],costeA+coste),costeA+coste) 
 
 
 def nullHeuristic(state, problem=None):
@@ -121,7 +186,28 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Creamos una cola de prioridad en este caso, porque los elementos se irán tomando en base a ella
+    cola=util.PriorityQueue()
+    visitados=set()
+
+    estado_inicial=problem.getStartState()
+    coste=0
+
+    cola.push((estado_inicial,[],coste),coste) #Ahora si nos viene bien tener esto, porque ya no son iguales el coste1 y el 2, uno marca el coste real, y el otro la prioridad
+
+    while not cola.isEmpty():
+        estado, acciones, costeA=cola.pop()
+
+        if problem.isGoalState(estado):
+            #print(costeA) #Lo calcula el propio programa, pero lo dejamos ahí pa que veamos que podemos hacerlo igual que las direcciones
+            return acciones
+
+        if estado not in visitados:
+            visitados.add(estado)
+
+            for sucesor, accion, coste in problem.getSuccessors(estado): #Devyelve una lista de triples (sucesor, accion, coste)
+                if sucesor not in visitados:
+                    cola.push((sucesor, acciones+[accion],costeA+coste),costeA+coste+heuristic(sucesor,problem)) #Hay q diferenciar el coste real, de la prioridad
 
 
 # Abbreviations
